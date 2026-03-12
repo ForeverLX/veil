@@ -1,0 +1,18 @@
+[Interface]
+Address = 10.0.0.1/24
+ListenPort = 51820
+PrivateKey = REDACTED
+
+# Forwarding & NAT rules for USB-Ethernet
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o enp0s21f0u2c2 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o enp0s21f0u2c2 -j MASQUERADE
+
+# iPhone Client
+[Peer]
+PublicKey = REDACTED
+AllowedIPs = 10.0.0.2/32
+
+# Workstation
+[Peer]
+PublicKey = REDACTED
+AllowedIPs = 10.0.0.3/32
