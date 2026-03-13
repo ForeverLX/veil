@@ -10,6 +10,10 @@ PublishPort=8081:80
 Volume=%h/vaultwarden:/data:z
 Environment=WEBSOCKET_ENABLED=true
 AutoUpdate=registry
+HealthCmd=curl -sf http://localhost:80/alive
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
 
 [Service]
 Restart=always

@@ -10,10 +10,14 @@ PublishPort=8888:8080
 Volume=%h/searxng/config:/etc/searxng:z
 Environment=SEARXNG_SETTINGS_PATH=/etc/searxng/settings.yml
 AutoUpdate=registry
+HealthCmd=wget -qO- http://localhost:8080/healthz
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
 
 [Service]
 Restart=always
-RestartSec=1o
+RestartSec=10
 
 [Install]
 WantedBy=default.target

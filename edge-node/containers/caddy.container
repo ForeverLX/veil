@@ -11,6 +11,10 @@ Volume=%h/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
 Volume=%h/caddy/data:/data:z
 Volume=%h/caddy/config:/config:z
 AutoUpdate=registry
+HealthCmd=curl -sf http://localhost:2019/config/
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
 
 [Service]
 Restart=always

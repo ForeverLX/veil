@@ -13,6 +13,10 @@ Environment=USER_UID=1000
 Environment=USER_GID=1000
 Environment=GITEA__repository__ENABLE_PUSH_CREATE_USER=true
 AutoUpdate=registry
+HealthCmd=curl -sf http://localhost:3000/api/healthz
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
 
 [Service]
 Restart=always
