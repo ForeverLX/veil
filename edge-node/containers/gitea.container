@@ -1,0 +1,22 @@
+[Unit]
+Description=Private Git Server
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/gitea/gitea:latest
+ContainerName=gitea
+PublishPort=3000:3000
+PublishPort=2222:22
+Volume=%h/gitea/data:/data:Z
+Environment=USER_UID=1000
+Environment=USER_GID=1000
+Environment=GITEA__repository__ENABLE_PUSH_CREATE_USER=true
+AutoUpdate=registry
+
+[Service]
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
