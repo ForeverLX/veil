@@ -1,0 +1,18 @@
+---
+- Documentation:
+    - Arch Wiki:
+        - icon: /app/config/icons/suricata.svg
+          href: https://wiki.archlinux.org/
+    - Suricata Docs:
+        - icon: /app/config/icons/suricata.svg
+          href: https://docs.suricata.io/
+    - Netdata Docs:
+        - icon: /app/config/icons/netdata.png
+          href: https://learn.netdata.cloud/
+- Local Lab:
+    - Nyx Gitea:
+        - icon: /app/config/icons/gitea.png
+          href: https://git.lan/foreverlx/nyx
+    - Nyx Backups:
+        - icon: /app/config/icons/gitea.png
+          href: https://git.lan/foreverlx/backups
