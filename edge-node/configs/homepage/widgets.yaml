@@ -1,9 +1,9 @@
 - search:
-    provider: brave
+    provider: custom
+    url: https://search.lan/search?q=
+    suggestionUrl: https://search.lan/autocompleter?q=
+    showSearchSuggestions: true
     target: _blank
-- netdata:
-    url: http://host.containers.internal:19999
-    node: b-k3s
 - datetime:
     format:
       timeStyle: short

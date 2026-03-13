@@ -1,0 +1,19 @@
+[Unit]
+Description=SearXNG Private Search Engine
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/searxng/searxng:latest
+ContainerName=searxng
+PublishPort=8888:8080
+Volume=%h/searxng/config:/etc/searxng:z
+Environment=SEARXNG_SETTINGS_PATH=/etc/searxng/settings.yml
+AutoUpdate=registry
+
+[Service]
+Restart=always
+RestartSec=1o
+
+[Install]
+WantedBy=default.target

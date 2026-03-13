@@ -1,0 +1,50 @@
+use_default_settings: true
+
+server:
+  secret_key: "REDACTED"
+  limiter: false
+  image_proxy: true
+  port: 8888
+  bind_address: "0.0.0.0"
+
+ui:
+  static_use_hash: true
+  default_theme: simple
+  theme_args:
+    simple_style: dark
+
+search:
+  safe_search: 0
+  autocomplete: "brave"
+  default_lang: "en"
+
+engines:
+  - name: brave
+    engine: brave
+    disabled: false
+  - name: duckduckgo
+    engine: duckduckgo
+    disabled: false
+  - name: google
+    engine: google
+    disabled: false
+  - name: bing
+    engine: bing
+    disabled: false
+  - name: github
+    engine: github
+    disabled: false
+  - name: stackoverflow
+    engine: stackexchange
+    disabled: false
+  - name: nvd
+    engine: nvd
+    disabled: false
+  - name: hackernews
+    engine: hackernews
+    disabled: false
+
+outgoing:
+  request_timeout: 10.0
+  max_request_timeout: 30.0
+
