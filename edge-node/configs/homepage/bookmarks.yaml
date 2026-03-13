@@ -1,7 +1,7 @@
 ---
 - Documentation:
     - Arch Wiki:
-        - icon: /icons/suricata.svg
+        - icon: arch-linux
           href: https://wiki.archlinux.org/
     - Suricata Docs:
         - icon: /icons/suricata.svg

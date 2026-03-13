@@ -1,4 +1,3 @@
----
 base: https://dash.lan
 allowIframe: true
 host: 0.0.0.0
@@ -6,6 +5,9 @@ title: Nyx Operations Center
 headerStyle: clean
 language: en
 layout:
+  - Cerberus Metrics:
+      style: row
+      columns: 1
   - Cerberus Threat Intel:
       style: row
       columns: 3

@@ -1,3 +1,13 @@
+- Cerberus Metrics:
+    - Cerberus Live Graphs:
+        icon: /icons/netdata.png
+        href: https://netdata.lan
+        description: Live System Graphs
+        widget:
+          type: iframe
+          src: https://netdata.lan/v3/#after=-300;theme=slate
+          classes: h-96 w-full
+          allowScrolling: yes
 - Cerberus Threat Intel:
     - Suricata IDS:
         icon: /icons/suricata.svg
