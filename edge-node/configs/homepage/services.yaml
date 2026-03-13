@@ -46,7 +46,7 @@
         widget:
           type: gitea
           url: http://host.containers.internal:3000
-          key: "4151a032eb61bd1e7d1e1de2bc3bb0d12ca3ccfb"
+          key: REDACTED
     - Vaultwarden:
         icon: /icons/vaultwarden.png
         href: https://vault.lan
