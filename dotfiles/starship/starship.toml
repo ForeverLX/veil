@@ -1,0 +1,84 @@
+# Azrael Security — Starship prompt config
+# Deployed across: NightForge, Cerberus, Tairn
+
+format = """
+[░▒▓](#a3aed2)\
+[ $os ](bg:#a3aed2 fg:#090c0c)\
+[](bg:#769ff0 fg:#a3aed2)\
+[ $username@$hostname ](bg:#769ff0 fg:#090c0c)\
+[](fg:#769ff0 bg:#394260)\
+[ $directory ](bg:#394260 fg:#a0a9cb)\
+[](fg:#394260 bg:#212736)\
+$git_branch\
+$git_status\
+[](fg:#212736 bg:#1d2230)\
+$docker_context\
+$python\
+$golang\
+[](fg:#1d2230)\
+\n$character"""
+
+[os]
+disabled = false
+style = "bg:#a3aed2 fg:#090c0c"
+
+[os.symbols]
+Arch = "󰣇"
+NixOS = "󱄅"
+Unknown = "󰌽"
+
+[username]
+show_always = true
+style_user = "bg:#769ff0 fg:#090c0c"
+style_root = "bg:#ff0000 fg:#ffffff"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+style = "bg:#769ff0 fg:#090c0c"
+format = "[$hostname]($style)"
+
+[directory]
+style = "bg:#394260 fg:#a0a9cb"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncate_to_repo = false
+
+[git_branch]
+symbol = ""
+style = "bg:#212736"
+format = "[ $symbol $branch ](bg:#212736 fg:#769ff0)"
+
+[git_status]
+style = "bg:#212736"
+format = "[$all_status$ahead_behind](bg:#212736 fg:#769ff0)"
+
+[docker_context]
+symbol = " "
+style = "bg:#1d2230"
+format = "[ $symbol $context ](bg:#1d2230 fg:#769ff0)"
+only_with_files = true
+
+[python]
+symbol = " "
+style = "bg:#1d2230"
+format = "[ $symbol $version ](bg:#1d2230 fg:#769ff0)"
+
+[golang]
+symbol = " "
+style = "bg:#1d2230"
+format = "[ $symbol $version ](bg:#1d2230 fg:#769ff0)"
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold green)"
+
+[cmd_duration]
+min_time = 2_000
+format = "[ took $duration](bold yellow)"
+
+[status]
+disabled = false
+style = "bold red"
+format = "[$status ]($style)"
