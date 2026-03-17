@@ -69,6 +69,23 @@ addressing, not .lan domains for widget URLs
 
 ---
 
+### Issue: libvirt VMs cannot get DHCP lease after nftables migration
+**Symptom:** VM gets no IP, DHCP discover packets visible on virbr0 via tcpdump
+but dnsmasq never responds. journalctl shows no DHCPDISCOVER entries.
+**Root cause:** nftables input chain policy DROP with no rule allowing UDP port 67
+(DHCP). DHCP discover packets from VMs (source 0.0.0.0) don't match the existing
+`ip saddr 192.168.122.0/24 iif "virbr0" accept` rule because they have no IP yet.
+libvirt also defaults to iptables backend — must explicitly set nftables backend.
+**Resolution:**
+- Set firewall_backend = "nftables" in /etc/libvirt/network.conf
+- Add `iif "virbr0" udp dport 67 accept` to nftables input chain
+- Restart libvirtd after backend change
+**Lesson:** When migrating to nftables, audit all services that inject firewall
+rules (libvirt, Docker, etc.) and ensure backend alignment. DHCP is stateless
+and pre-IP — it will never match source IP rules.
+
+---
+
 ## Containers & Quadlets
 
 ### Issue: Podman socket missing after container restart
@@ -118,6 +135,27 @@ Stop container before editing mounted config files
 **Resolution:** sudo resolvconf -u then retry wg-quick up
 **Lesson:** Run resolvconf -u before bringing up WireGuard if resolv.conf
 was manually modified
+
+---
+
+### Issue: WireGuard hub-and-spoke peers cannot reach each other through hub
+**Symptom:** NightForge cannot ping Tairn via 10.0.0.4, packets arrive at
+Cerberus but are never forwarded. tcpdump on wg0 shows requests with no replies.
+**Root cause:** Two compounding issues:
+1. Kernel rp_filter (Reverse Path Filter) drops packets that arrive and would
+   be forwarded back out the same interface — a security feature that treats
+   same-interface forwarding as spoofing
+2. nftables forward chain missing an explicit iif "wg0" oif "wg0" accept rule
+   for same-interface forwarding (hairpin traffic)
+**Resolution:**
+- Set rp_filter=0 on wg0 and all interfaces via /etc/sysctl.d/99-wireguard.conf
+- Add `iif "wg0" oif "wg0" accept` to nftables forward chain
+- Add explicit host routes for each spoke: `ip route add 10.0.0.x/32 dev wg0`
+  via PostUp in wg0.conf on Cerberus
+**Lesson:** WireGuard hub-and-spoke requires explicit kernel configuration for
+hairpin forwarding. rp_filter is a legitimate security control — document the
+tradeoff. Cryptographic peer authentication in WireGuard mitigates the spoofing
+risk that rp_filter normally guards against.
 
 ---
 
