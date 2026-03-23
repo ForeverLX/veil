@@ -1,6 +1,6 @@
-# Nyx Troubleshooting Runbook
+# Veil Troubleshooting Runbook
 
-Documented issues, root causes, and resolutions encountered during Nyx
+Documented issues, root causes, and resolutions encountered during Veil
 infrastructure builds. Maintained as an operational reference and
 portfolio artifact demonstrating systematic debugging methodology.
 
@@ -156,6 +156,24 @@ Cerberus but are never forwarded. tcpdump on wg0 shows requests with no replies.
 hairpin forwarding. rp_filter is a legitimate security control — document the
 tradeoff. Cryptographic peer authentication in WireGuard mitigates the spoofing
 risk that rp_filter normally guards against.
+
+---
+
+### Issue: Tairn WireGuard peer config drift after reboot
+
+**Symptom:** Cerberus wg show shows Tairn endpoint as 192.168.1.145:50555 (NightForge's LAN IP), no handshake
+**Root cause:** Stale endpoint cached from prior session, wrong IP written into Cerberus wg0.conf. Tairn config also had allowedIPs = 10.0.0.0/24 on Cerberus peer instead of 10.0.0.1/32, causing route conflict
+**Resolution:** Corrected Cerberus wg0.conf — removed Tairn endpoint entirely (Tairn initiates). Corrected Tairn configuration.nix — 10.0.0.1/32 on Cerberus peer, removed direct endpoint from NightForge peer
+**Lesson:** In hub-and-spoke, spokes initiate to hub only. Hub should have no endpoint for spokes — WireGuard learns it dynamically. Never set a spoke-to-spoke direct endpoint.
+
+---
+
+### Issue: vnet0 not attached to virbr0 after reboot (Tairn unreachable)
+
+**Symptom:** ssh tairn fails, bridge link show empty, virbr0 shows NO-CARRIER, Tairn has no default route
+**Root cause:** nftables failed at boot (referenced virbr0 before it existed), leaving libvirt without NAT rules. Race condition between libvirt VM start and bridge attachment — vnet0 created but never added to virbr0
+**Resolution:** Removed virbr0 references from /etc/nftables.conf (libvirt manages its own rules). Created /etc/systemd/system/vnet0-bridge-fix.service — oneshot after libvirtd.service that runs ip link set vnet0 master virbr0 && ip link set vnet0 up
+**Lesson:** When two subsystems have implicit ordering dependencies (libvirt bridge attachment vs nftables load), enforce it explicitly with a oneshot systemd service. After= is the correct tool, not manual intervention.
 
 ---
 
