@@ -79,3 +79,7 @@ Sync to both GitHub and Gitea on every push.
 ## Name History
 This infrastructure was previously called "Nyx." It is now "Veil." Never reference Nyx
 in any new work, commits, or documentation.
+
+## Agent Routing
+- Use `infra-auditor` for all read-only config review
+- Use `router-escalation` for any topology changes or multi-node coordination
