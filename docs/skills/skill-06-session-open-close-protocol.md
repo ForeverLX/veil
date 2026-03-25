@@ -1,6 +1,6 @@
 # Azrael Security Skill — Session Open / Close Protocol
-**Version:** 1.1
-**Date:** 2026-03-22
+**Version:** 1.2
+**Date:** 2026-03-25
 **Purpose:** Define exactly what happens at the start and end of every Claude session to ensure context is loaded correctly, work is captured, and the handoff document stays current. Also governs session scope discipline and the Claude Code session workflow.
 **Use when:** Every session — automatically. This skill governs session structure regardless of what the session is about.
 
@@ -18,6 +18,8 @@ Do not assume what to work on. Ask one question: "What do you want to focus on t
 
 **Step 3 — Check for open items from the last session**
 Section 7 of the handoff contains the last three session logs. Before starting new work, check for any explicitly unresolved items — an infrastructure change that was mid-flight, a writeup that was in progress, an application that needed to be submitted. Surface these in one line: "Last session left [item] unresolved — handle that first or carry it forward?"
+
+Also cross-check backlog items against the session logs. If a backlog item says a decision or milestone is "not yet done" but the session logs mention it being completed or finalized, treat that as a handoff capture failure and surface it immediately: "The backlog says [item] is pending but Session [N] log mentions it was completed — confirming state before proceeding."
 
 **Step 4 — Check for documentation debt**
 If the last session involved a learning track, ask: "Is the artifact from last session committed?" If not, that gets handled before new material starts. This enforces the no-documentation-debt rule from Skill 4 without requiring Darrius to remember it.
@@ -102,6 +104,7 @@ Based on the answers, identify which of the seven handoff sections need updating
 | Completed work, milestones | Section 3 (Active Operations) and/or Section 7 (Session Log) |
 | Infrastructure state change | Section 2 (Infrastructure State) |
 | New or updated decisions | Section 0 (Stable Reference — Locked Decisions table) |
+| Research question locked or refined | Section 3 (Active Operations) AND Section 0 (Locked Decisions table) — both required, not just session log |
 | Repo changes | Section 4 (Repository State) |
 | New backlog items | Section 5 (Backlog) |
 | Course progress | Section 6 (Courses & Certifications) |
@@ -112,7 +115,6 @@ Section 7 always updates — every session gets a log entry regardless of what e
 **Step 3 — Generate the session log entry**
 
 Format for Section 7:
-
 ```
 ### Session [N] — YYYY-MM-DD
 [Two to four sentences. What was worked on, what was completed or decided, what was left open.
@@ -125,6 +127,7 @@ Rules for the session log:
 - Name specific artifacts, decisions, or infrastructure changes — not vague summaries
 - If something was left unresolved, name it explicitly so Step 3 of the next session open catches it
 - Drop the oldest entry when the log exceeds three entries — full history lives in git
+- A locked research question must never appear only in the session log narrative — if it is not in Section 3 and Section 0, the handoff is incomplete regardless of what the log says
 
 **Step 4 — Regenerate only the changed sections**
 
@@ -190,3 +193,5 @@ The handoff follows a locked 7-section schema. Claude never reorders, renames, o
 - Lets a session close with unverified infrastructure changes still in flight
 - Forgets to include the commit command
 - Starts a new workstream at the end of a session instead of adding it to the backlog
+- Captures a locked research question only in the session log narrative — it must go into Section 3 AND Section 0 or the handoff is incomplete
+- Closes a session where backlog items conflict with session log entries without surfacing the discrepancy
