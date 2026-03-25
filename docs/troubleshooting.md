@@ -86,6 +86,29 @@ and pre-IP — it will never match source IP rules.
 
 ---
 
+### Issue: Full mesh and DNS failure — Cerberus ethernet interface down
+**Symptom:** NightForge browser DNS fails for all domains (external and .lan).
+ping 8.8.8.8 succeeds from NightForge but all name resolution fails.
+WireGuard handshake to Cerberus stale with 0 B received despite keepalive.
+SSH to Cerberus on port 2121 hangs with no response.
+**Root cause:** Physical ethernet interface (enp6s21f0u2c2) on Cerberus went
+DOWN. Cascade: no internet → WireGuard cannot handshake → Pi-hole unreachable
+→ all DNS fails on NightForge. nftables also failed to reload on interface
+loss.
+**Resolution:**
+1. Physical access to Cerberus
+2. `sudo ip link set enp6s21f0u2c2 up`
+3. `sudo systemctl restart nftables`
+4. `sudo wg-quick down wg0 && sudo wg-quick up wg0`
+5. Verify: `sudo wg show` — confirm NightForge handshake is fresh
+**Lesson:** Diagnose bottom-up — physical interface first, then routing, then
+WireGuard, then DNS. A stale WireGuard handshake with keepalive active means
+the underlying network path is broken, not WireGuard itself. SSH hanging on
+the recovery port (2121) is a strong signal the interface is down, not a
+firewall issue.
+
+---
+
 ## Containers & Quadlets
 
 ### Issue: Podman socket missing after container restart
