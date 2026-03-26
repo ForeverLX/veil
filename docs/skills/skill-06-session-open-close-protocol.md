@@ -1,6 +1,6 @@
 # Azrael Security Skill — Session Open / Close Protocol
-**Version:** 1.3
-**Date:** 2026-03-25
+**Version:** 1.4
+**Date:** 2026-03-26
 **Purpose:** Define exactly what happens at the start and end of every Claude session to ensure context is loaded correctly, work is captured, and the handoff document stays current. Also governs session scope discipline and the Claude Code session workflow.
 **Use when:** Every session — automatically. This skill governs session structure regardless of what the session is about.
 
@@ -159,18 +159,20 @@ Rules for the session log:
 - Drop the oldest entry when the log exceeds three entries — full history lives in git
 - A locked research question must never appear only in the session log narrative — if it is not in Section 3 and Section 0, the handoff is incomplete regardless of what the log says
 
-**Step 4 — Regenerate only the changed sections**
+**Step 4 — Output changed sections only**
 
-Do not regenerate the entire handoff from scratch. Regenerate only the sections identified in Step 2, plus Section 7. Output them clearly labeled so Darrius can copy them into the existing document.
+Output only the sections identified in Step 2, plus Section 7. Label each section clearly so Darrius can hand them to Claude Code. Do not output the full document — Claude Code applies the edits mechanically.
 
-**Step 5 — Output the commit-ready file**
+**Step 5 — Provide Claude Code prompt**
 
-After Darrius confirms the updated sections are accurate, output the complete updated handoff document in a single code block, ready to save as `azrael-handoff-YYYY-MM-DD.md`.
+Output a complete Claude Code prompt containing:
+1. Instruction to copy azrael-handoff-q1-sNNN.md to azrael-handoff-q1-s(NNN+1).md
+2. The exact surgical edits for each changed section — quoted text to find, replacement text
+3. The commit command:
+   git add azrael-handoff-q1-s(NNN+1).md && git commit -m "docs: session handoff YYYY-MM-DD S(NNN+1)"
+4. git push
 
-End with the exact commit command:
-```bash
-git add azrael-handoff-YYYY-MM-DD.md && git commit -m "docs: session handoff YYYY-MM-DD"
-```
+Claude Code handles the mechanical file operations. Claude AI handles the content decisions. Do not regenerate the full document in this interface.
 
 **Step 6 — Remind about skill file uploads if applicable**
 
